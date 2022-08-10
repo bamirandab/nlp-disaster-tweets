@@ -29,11 +29,11 @@ def clean_tweet(tweet):
   return tweet_clean
 
 
-def drop_word(x, tweet):
-  return re.sub('[{letter}]\w+'.format(letter=x),'',tweet)
+def drop_word(x, word, tweet):
+  return re.sub('[{letter}]\w+'.format(letter=x),word,tweet)
 
 def drop_url(tweet):
-  return re.sub(r'http\S+','',tweet)
+  return re.sub(r'http\S+','url',tweet)
 
 
 def clean_df(x):
@@ -41,21 +41,21 @@ def clean_df(x):
     hashtag = x_clean_temp.apply(lambda x: search_keywords('#',x))
     mentions = x_clean_temp.apply(lambda x: search_keywords('@',x))
     urls = x_clean_temp.apply(lambda x: search_keywords('https',x))
-    x_clean = x_clean_temp.mapply(lambda x: drop_url(drop_word('#',drop_word('@',x))))
+    x_clean = x_clean_temp.mapply(lambda x: drop_url(drop_word('#','hashtag', drop_word('@', 'mention',x))))
 
-    sentences = []
+    sentences = x_clean.to_list()
 
-    for i, tweet in enumerate(x_clean.to_list()):
-        temp_sentencs = tweet
-        if hashtag[i]:
-            temp_sentencs += ' hashtag'
+    # for i, tweet in enumerate(x_clean.to_list()):
+    #     temp_sentencs = tweet
+    #     if hashtag[i]:
+    #         temp_sentencs += ' hashtag'
         
-        if mentions[i]:
-            temp_sentencs += ' mention'
+    #     if mentions[i]:
+    #         temp_sentencs += ' mention'
         
-        if urls[i]:
-            temp_sentencs += ' URL'
+    #     if urls[i]:
+    #         temp_sentencs += ' URL'
 
-        sentences.append(temp_sentencs)
+        # sentences.append(temp_sentencs)
 
     return sentences
